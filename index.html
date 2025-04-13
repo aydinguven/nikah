@@ -241,6 +241,45 @@
             margin-bottom: 10px;
         }
         
+        /* Calendar options styling */
+        .calendar-section {
+            margin-top: 30px;
+        }
+        
+        .calendar-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .calendar-option {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--secondary-color);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(142, 65, 98, 0.1);
+        }
+        
+        .calendar-option:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(142, 65, 98, 0.2);
+        }
+        
+        .calendar-option i {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+        
         @media (max-width: 768px) {
             h1 {
                 font-size: 3rem;
@@ -252,6 +291,16 @@
             
             .map-option {
                 min-width: 100%;
+            }
+            
+            .calendar-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .calendar-option {
+                width: 80%;
+                justify-content: center;
             }
         }
     </style>
@@ -267,7 +316,7 @@
 
     <header>
         <h1>Nişanlanıyoruz!!</h1>
-        <p class="subtitle">Birlikte atacağımız bu ilk  adımda, sizleri de aramızda görmek isteriz</p>
+        <p class="subtitle">Birlikte atacağımız bu ilk adımda, sizleri de aramızda görmek isteriz</p>
     </header>
 
     <section class="photo-section">
@@ -313,6 +362,25 @@
             <span class="detail-label"><i class="far fa-envelope"></i> RSVP:</span> 
             <span>By May 15, 2025 to engagement@example.com</span>
         </div>
+        
+        <!-- Add to Calendar Section -->
+        <div class="calendar-section">
+            <h3><i class="far fa-calendar-plus"></i> Add to Your Calendar</h3>
+            <div class="calendar-options">
+                <a href="#" class="calendar-option" id="google-calendar">
+                    <i class="fab fa-google"></i> Google Calendar
+                </a>
+                <a href="#" class="calendar-option" id="outlook-calendar">
+                    <i class="fab fa-microsoft"></i> Outlook
+                </a>
+                <a href="#" class="calendar-option" id="apple-calendar">
+                    <i class="fab fa-apple"></i> Apple Calendar
+                </a>
+                <a href="#" class="calendar-option" id="yahoo-calendar">
+                    <i class="fab fa-yahoo"></i> Yahoo Calendar
+                </a>
+            </div>
+        </div>
     </section>
 
     <section class="event-details">
@@ -352,6 +420,62 @@
                 heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
                 heartsContainer.appendChild(heart);
             }
+            
+            // Calendar functionality
+            const eventDetails = {
+                title: "Nişan Töreni",
+                description: "Nişan törenimize katılmanızdan mutluluk duyarız.",
+                location: "Adresadresadres",
+                startDate: "2025-04-26T19:00:00",
+                endDate: "2025-04-26T22:00:00"
+            };
+            
+            // Format dates for calendar URLs
+            const formatDate = (dateString) => {
+                const date = new Date(dateString);
+                return date.toISOString().replace(/-|:|\.\d+/g, "");
+            };
+            
+            const startDate = formatDate(eventDetails.startDate);
+            const endDate = formatDate(eventDetails.endDate);
+            
+            // Google Calendar
+            document.getElementById('google-calendar').href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventDetails.title)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(eventDetails.description)}&location=${encodeURIComponent(eventDetails.location)}`;
+            document.getElementById('google-calendar').target = "_blank";
+            
+            // Outlook Calendar
+            document.getElementById('outlook-calendar').href = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(eventDetails.title)}&body=${encodeURIComponent(eventDetails.description)}&startdt=${eventDetails.startDate}&enddt=${eventDetails.endDate}&location=${encodeURIComponent(eventDetails.location)}`;
+            document.getElementById('outlook-calendar').target = "_blank";
+            
+            // Yahoo Calendar
+            document.getElementById('yahoo-calendar').href = `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(eventDetails.title)}&st=${startDate}&et=${endDate}&desc=${encodeURIComponent(eventDetails.description)}&in_loc=${encodeURIComponent(eventDetails.location)}`;
+            document.getElementById('yahoo-calendar').target = "_blank";
+            
+            // Apple Calendar (downloads an .ics file)
+            document.getElementById('apple-calendar').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Create iCalendar file content
+                const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:${eventDetails.title}
+DTSTART:${startDate}
+DTEND:${endDate}
+DESCRIPTION:${eventDetails.description}
+LOCATION:${eventDetails.location}
+END:VEVENT
+END:VCALENDAR`;
+                
+                // Create a blob and download link
+                const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = "engagement_event.ics";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
         });
 
         // When your image is added, you'll replace this code
