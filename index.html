@@ -376,6 +376,66 @@
             font-size: 1.2em;
         }
         
+        /* Names section styling */
+        .names-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(142, 65, 98, 0.15);
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .names-section::before, .names-section::after {
+            content: "";
+            position: absolute;
+            height: 2px;
+            width: 70%;
+            background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+            left: 15%;
+        }
+        
+        .names-section::before {
+            top: 15px;
+        }
+        
+        .names-section::after {
+            bottom: 15px;
+        }
+        
+        .names-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .bride-name, .groom-name {
+            font-family: 'Playfair Display', 'Montserrat', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin: 10px 0;
+        }
+        
+        .heart-divider {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .engagement-message {
+            font-family: 'Montserrat', 'Open Sans', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--text-color);
+            margin-top: 20px;
+        }
+        
         /* Improved Mobile Responsiveness */
         @media (min-width: 768px) {
             body {
@@ -419,6 +479,19 @@
             .detail-item {
                 flex-wrap: nowrap;
             }
+            
+            .names-container {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .bride-name, .groom-name {
+                font-size: 2rem;
+            }
+            
+            .heart-divider {
+                margin: 0 20px;
+            }
         }
         
         /* Touch-friendly improvements */
@@ -448,6 +521,15 @@
             <p class="subtitle">Birlikte atacağımız bu ilk adımda, sizleri de aramızda görmek isteriz</p>
         </header>
 
+        <!-- New Names Section -->
+        <section class="names-section">
+            <div class="names-container">
+                <div class="bride-name">İremnur Neziha YILMAZ</div>
+                <div class="heart-divider">❤</div>
+                <div class="groom-name">Aydın Güven ASLANGÖREN</div>
+            </div>
+        </section>
+
         <section class="photo-section">
             <!-- Slideshow container -->
             <div class="slideshow-container">
@@ -471,7 +553,14 @@
                 <div class="slide">
                     <img src="picture5.jpg" alt="Engagement Photo 5">
                 </div>
+                
+                <div class="slide">
+                    <img src="picture6.jpg" alt="Engagement Photo 6">
+                </div>
 
+                <div class="slide">
+                    <img src="picture7.jpg" alt="Engagement Photo 7">
+                </div>
                 <!-- Next and previous buttons -->
                 <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
                 <a class="next" onclick="plusSlides(1)">&#10095;</a>
@@ -484,6 +573,8 @@
                 <span class="dot" onclick="currentSlide(3)"></span>
                 <span class="dot" onclick="currentSlide(4)"></span>
                 <span class="dot" onclick="currentSlide(5)"></span>
+                <span class="dot" onclick="currentSlide(6)"></span>
+                <span class="dot" onclick="currentSlide(7)"></span>
             </div>
             
             <p class="photo-caption">Mutluluğumuza siz de katılın.</p>
@@ -560,7 +651,7 @@
 
         <footer>
             <p>Sizleri Bekliyoruz!</p>
-            <p>Sevgilerle, İrem ve Aydın</p>
+            <p>Sevgilerle, İremnur ve Aydın</p>
         </footer>
     </div>
 
@@ -580,8 +671,8 @@
             
             // Calendar functionality
             const eventDetails = {
-                title: "Nişan Töreni",
-                description: "Nişan törenimize katılmanızdan mutluluk duyarız.",
+                title: "Nişan Töreni - İremnur & Aydın",
+                description: "İremnur Neziha YILMAZ ve Aydın Güven ASLANGÖREN'in nişan törenine katılmanızdan mutluluk duyarız.",
                 location: "Adresadresadres",
                 startDate: "2025-04-26T19:00:00",
                 endDate: "2025-04-26T22:00:00"
