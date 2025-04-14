@@ -561,3 +561,90 @@ footer::before {
         margin-top: -15px;
     }
 }
+
+.photo-upload-container {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+}
+
+.upload-form {
+    width: 100%;
+}
+
+.upload-input {
+    margin-bottom: 20px;
+}
+
+.upload-input input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ffb6c1;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.upload-area {
+    border: 2px dashed #ffb6c1;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    background: rgba(255, 192, 203, 0.1);
+}
+
+.upload-area i {
+    font-size: 48px;
+    color: #ff69b4;
+    margin-bottom: 15px;
+}
+
+.progress-area {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.shared-photos {
+    margin-top: 40px;
+}
+
+.photo-albums {
+    margin-top: 20px;
+}
+
+.album {
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.album-title {
+    font-size: 1.2em;
+    color: #ff69b4;
+    margin-bottom: 15px;
+}
+
+.album-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.album-photo {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.album-photo:hover {
+    transform: scale(1.05);
+}

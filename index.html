@@ -159,6 +159,28 @@
             </div>
         </section>
 
+        <section class="event-details">
+            <h2>Fotoğraflarınızı Paylaşın</h2>
+            <div class="photo-upload-container">
+                <form id="photoUploadForm" class="upload-form">
+                    <div class="upload-input">
+                        <input type="text" id="uploaderName" placeholder="İsminiz" required>
+                    </div>
+                    <div class="upload-area" id="dropZone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Fotoğraf yüklemek için tıklayın veya sürükleyin</p>
+                        <input type="file" id="photoInput" accept="image/*" multiple style="display: none;">
+                    </div>
+                    <div id="uploadProgress" class="progress-area"></div>
+                </form>
+            </div>
+
+            <div class="shared-photos">
+                <h3>Paylaşılan Fotoğraflar</h3>
+                <div id="photoAlbums" class="photo-albums"></div>
+            </div>
+        </section>
+
         <footer>
             <p>Sizleri Bekliyoruz!</p>
             <p>Sevgilerle, İremnur ve Aydın</p>
@@ -305,6 +327,106 @@ END:VCALENDAR`;
         window.onload = function() {
             setTimeout(autoSlideshow, 5000);
         };
+
+        // Add photo upload and display functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const photoInput = document.getElementById('photoInput');
+            const uploaderName = document.getElementById('uploaderName');
+            const progressArea = document.getElementById('uploadProgress');
+            const photoAlbums = document.getElementById('photoAlbums');
+
+            // Load existing photos
+            fetchPhotos();
+
+            dropZone.addEventListener('click', () => photoInput.click());
+            
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                handleFiles(files);
+            });
+            
+            photoInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+
+            function handleFiles(files) {
+                Array.from(files).forEach(file => {
+                    uploadFile(file);
+                });
+            }
+
+            async function uploadFile(file) {
+                const formData = new FormData();
+                formData.append('photo', file);
+                formData.append('uploaderName', uploaderName.value || 'Anonymous');
+
+                try {
+                    const response = await fetch('http://152.70.55.37:5000/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        progressArea.innerHTML = 'Upload successful!';
+                        fetchPhotos(); // Refresh the photo display
+                    } else {
+                        progressArea.innerHTML = 'Upload failed.';
+                    }
+                } catch (error) {
+                    progressArea.innerHTML = 'Error uploading file.';
+                }
+            }
+
+            async function fetchPhotos() {
+                try {
+                    const response = await fetch('http://152.70.55.37:5000/api/photos');
+                    const photos = await response.json();
+                    displayPhotos(photos);
+                } catch (error) {
+                    console.error('Error fetching photos:', error);
+                }
+            }
+
+            function displayPhotos(photos) {
+                photoAlbums.innerHTML = '';
+                photos.reverse().forEach(photo => {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.className = 'photo-item';
+                    photoDiv.innerHTML = `
+                        <img src="http://152.70.55.37:5000/uploads/${photo.filename}" alt="Shared photo">
+                        <div class="photo-info">
+                            <span class="uploader">${photo.uploader}</span>
+                            <span class="timestamp">${formatDate(photo.timestamp)}</span>
+                        </div>
+                    `;
+                    photoAlbums.appendChild(photoDiv);
+                });
+            }
+
+            function formatDate(timestamp) {
+                const date = new Date(timestamp.replace('_', 'T'));
+                return date.toLocaleDateString('tr-TR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        });
     </script>
 </body>
 </html>
