@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
+from PIL import Image
 import os
 from datetime import datetime
 import json
@@ -22,6 +23,22 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def create_thumbnail(filepath, thumb_size=(300, 300)):
+    """Create a thumbnail for the uploaded image"""
+    thumb_path = filepath.replace('/uploads/', '/uploads/thumbs/')
+    os.makedirs(os.path.dirname(thumb_path), exist_ok=True)
+    
+    with Image.open(filepath) as img:
+        # Convert RGBA to RGB if necessary
+        if img.mode in ('RGBA', 'LA'):
+            background = Image.new('RGB', img.size, (255, 255, 255))
+            background.paste(img, mask=img.split()[-1])
+            img = background
+        
+        img.thumbnail(thumb_size)
+        img.save(thumb_path, 'JPEG', quality=85)
+    return os.path.basename(thumb_path)
+
 @app.route('/api/upload', methods=['POST'])
 def upload_photo():
     if 'photo' not in request.files:
@@ -42,9 +59,13 @@ def upload_photo():
         # Save the file
         file.save(filepath)
 
+        # Create thumbnail
+        thumb_filename = create_thumbnail(filepath)
+        
         # Save metadata
         metadata = {
             'filename': filename,
+            'thumbnail': thumb_filename,
             'uploader': uploader_name,
             'timestamp': timestamp,
             'originalName': file.filename
@@ -78,6 +99,10 @@ def get_photos():
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/uploads/thumbs/<filename>')
+def thumbnail_file(filename):
+    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], 'thumbs'), filename)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
