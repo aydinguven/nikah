@@ -25,13 +25,8 @@ def allowed_file(filename):
 
 def create_thumbnail(filepath, thumb_size=(300, 300)):
     """Create a thumbnail for the uploaded image"""
-    # Create thumbs directory inside uploads
-    thumbs_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'thumbs')
-    os.makedirs(thumbs_dir, exist_ok=True)
-    
-    # Get just the filename and create thumb path
-    filename = os.path.basename(filepath)
-    thumb_path = os.path.join(thumbs_dir, filename)
+    thumb_path = filepath.replace('/uploads/', '/uploads/thumbs/')
+    os.makedirs(os.path.dirname(thumb_path), exist_ok=True)
     
     with Image.open(filepath) as img:
         # Convert RGBA to RGB if necessary
@@ -42,7 +37,7 @@ def create_thumbnail(filepath, thumb_size=(300, 300)):
         
         img.thumbnail(thumb_size)
         img.save(thumb_path, 'JPEG', quality=85)
-    return filename  # Return just the filename, not the full path
+    return os.path.basename(thumb_path)
 
 @app.route('/api/upload', methods=['POST'])
 def upload_photo():
@@ -107,13 +102,7 @@ def uploaded_file(filename):
 
 @app.route('/uploads/thumbs/<filename>')
 def thumbnail_file(filename):
-    thumbs_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'thumbs')
-    return send_from_directory(thumbs_dir, filename)
+    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], 'thumbs'), filename)
 
 if __name__ == '__main__':
-    # Create SSL context
-    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain('cert.pem', 'key.pem')
-    
-    # Run with SSL
-    app.run(host='0.0.0.0', port=5000, ssl_context=context)
+    app.run(host='0.0.0.0', port=5000)
