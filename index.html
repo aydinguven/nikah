@@ -434,7 +434,7 @@ END:VCALENDAR`;
                 formData.append('uploaderName', uploaderName.value || 'Anonymous');
 
                 try {
-                    const response = await fetch('http://152.70.55.37:5000/api/upload', {
+                    const response = await fetch('https://152.70.55.37:5000/api/upload', {
                         method: 'POST',
                         body: formData
                     });
@@ -453,7 +453,7 @@ END:VCALENDAR`;
 
             async function fetchPhotos() {
                 try {
-                    const response = await fetch('http://152.70.55.37:5000/api/photos');
+                    const response = await fetch('https://152.70.55.37:5000/api/photos');
                     const photos = await response.json();
                     displayPhotos(photos);
                 } catch (error) {
@@ -468,8 +468,8 @@ END:VCALENDAR`;
                     const photoDiv = document.createElement('div');
                     photoDiv.className = 'photo-item';
                     photoDiv.innerHTML = `
-                        <img src="http://152.70.55.37:5000/uploads/thumbs/${photo.thumbnail}" 
-                             data-full="http://152.70.55.37:5000/uploads/${photo.filename}" 
+                        <img src="https://152.70.55.37:5000/uploads/thumbs/${photo.thumbnail}" 
+                             data-full="https://152.70.55.37:5000/uploads/${photo.filename}" 
                              alt="Shared photo">
                         <div class="photo-info">
                             <span class="uploader">${photo.uploader}</span>
